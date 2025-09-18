@@ -6,6 +6,7 @@
 #include "uart.h"
 #include "xmem.h"
 #include "sram.h"
+#include "address_decoder.h"
 #include <util/delay.h>
 #include <avr/io.h>
 #include <stdlib.h>
@@ -15,9 +16,11 @@
 int main(void) {
     UART_init(MYUBRR);
     fdevopen(UART_putchar, UART_getchar);
+    //UART_transmit('s');
     //test_latch();
     SRAM_init();
     SRAM_test();
+    //dec_test();
 
 }
 //yellow = data

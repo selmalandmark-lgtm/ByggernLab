@@ -3,7 +3,6 @@
 void SRAM_init(){
     MCUCR = (1 << SRE); // Enable SRAM i ATmega162
     SFIOR = (1 << XMM2);
-
 }
 
 
