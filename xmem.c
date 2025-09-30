@@ -1,7 +1,7 @@
 #include "xmem.h"
 
 void test_latch(void){
- DDRE = 0b10; // Setter ALE (pin 1 på port E) som utgang. 0=inngang, 1=utgang
+  DDRE = 0b10; // Setter ALE (pin 1 på port E) som utgang. 0=inngang, 1=utgang
   PORTE = 0b10; // Setter ALE høy. Forteller vippa at nå kommer det en adresse som skal lagres.
   PORTA = 0b000001; // = 0x00. Sender en adresse ut til vippa.
   _delay_ms(2000); // 2 sek delay for å gjøre det enklere å måle på kretsen.

@@ -1,8 +1,12 @@
 #include "sram.h"
 
 void SRAM_init(){
-    MCUCR = (1 << SRE); // Enable SRAM i ATmega162
-    SFIOR = (1 << XMM2);
+    MCUCR |= (1 << SRE); // Enable SRAM i ATmega162
+    SFIOR |= (1 << XMM2); 
+    //SFIOR &= ~(1<<XMM2);
+    //SFIOR &= ~(1<<XMM1);
+    //SFIOR &= ~(1<<XMM0);
+    //SFIOR |= (1 << XMM2); 
 }
 
 
