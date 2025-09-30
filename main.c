@@ -13,12 +13,39 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <util/delay.h>
+#include "spi.h"
 
 //picocom -b 9600 /dev/ttyS0
 
 
 int main(void) {
     UART_init(MYUBRR);
+    fdevopen(UART_putchar, UART_getchar);
+    //UART_transmit('s');
+    //test_latch();
+    SRAM_init();
+    //SRAM_test();
+    //dec_test();
+    adc_init();
+    spi_init();
+    printf("Starter SPI-test...\n");
+
+    spi_selectSlave(0);
+    spi_write(0xAA);
+    uint8_t answer = spi_read();
+    printf("Svar fra slave 1: 0x%02X\n", answer);
+
+    spi_selectSlave(1);
+    spi_write(0xAB);
+    answer = spi_read();
+    printf("Svar fra slave 2: 0x%02X\n", answer);
+
+
+}
+//yellow = data
+//purple = adress
+
+/*    UART_init(MYUBRR);
     fdevopen(UART_putchar, UART_getchar);
     //UART_transmit('s');
     //test_latch();
@@ -37,8 +64,4 @@ int main(void) {
         printf("Joystick X: %d%%\tJoystick Y: %d%%\n", pos.joystick_x, pos.joystick_y);
         printf("Slider X:   %d\tSlider Y:   %d\n\n", pos.slider_x, pos.slider_y);    
         _delay_ms(500);
-   }
-}
-//yellow = data
-//purple = adress
-
+   }*/
