@@ -1,21 +1,16 @@
+#include <avr/pgmspace.h>
+#include "spi.h"
+#include <util/delay.h>
+#include "fonts.h"
 
-/*#include <stdint.h>
-
-void oled_init();
-
-oled_reset();
-
-oled_home();
-
-oled_go_to_line(line);
-
-oled_clear_line(line);
-
-oled_pos(row, column);
-
-oled_write_data(char); //volatile
-
-oled_print(char*);
-
-oled_set_brightness(lvl);
-*/
+void OLED_init();
+void OLED_home();
+void OLED_goto_line(uint8_t line);
+void OLED_goto_column(uint8_t column);
+void OLED_clear_line(uint8_t line);
+void OLED_pos(uint8_t row, uint8_t column);
+void OLED_pos(uint8_t row, uint8_t column);
+void OLED_write_data(uint8_t data);
+void OLED_print_char(char letter);
+void OLED_print(char* word);
+void OLED_set_brightness(uint8_t lvl);
