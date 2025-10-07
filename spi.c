@@ -3,6 +3,7 @@
 void spi_init(){
     //pb3 and pb4 as output, SS1, SS2
     DDRB |= (1 << PB3) | (1 << PB4);
+
     //MOSI: PB5 output
     DDRB |= (1 << PB5);
     //sck: pb7 output
@@ -44,14 +45,29 @@ void spi_transferBytes(const uint8_t *tx_data, uint8_t *rx_data, uint8_t len){
     }
 }
 
+
+/*void spi_selectSlave(uint8_t n){
+    //0 = ss1 og 1= ss2
+    if (n==0){ //ss1 skal aktiveres, ss2 deaktiveres
+        PORTB &= ~(1 << PB4);
+        PORTB &= ~(1 << PB3);
+    }
+    else if (n==1){
+        PORTB |= (1 << PB4); 
+        PORTB |= (1 << PB3); 
+    }
+}*/
+
+
+
 void spi_selectSlave(uint8_t n){
     //0 = ss1 og 1= ss2
-    if (n==0){ //setter 0 til slave: altså lav, ss2 til høy
-        PORTB &= ~(1 << PB3);
-        PORTB |= (1 << PB4);
-    }
-    else if (n==1){//setter 1 il lav. 0 til høy
+    if (n==0){ //ss1 skal aktiveres, ss2 deaktiveres
         PORTB &= ~(1 << PB4);
         PORTB |= (1 << PB3);
+    }
+    else if (n==1){
+        PORTB |= (1 << PB4); 
+        PORTB &= ~(1 << PB3);
     }
 }

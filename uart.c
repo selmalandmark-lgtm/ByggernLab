@@ -7,7 +7,7 @@ void UART_init(unsigned int ubrr){
   // turn on reciving and sending and interrupt |(1<<RXCIE0)
   UCSR0B = (1<<RXEN0)|(1<<TXEN0);
   //set frame format: 8 data bits two stop bit
-  UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
+  UCSR0C = (1<<URSEL0)|(1<<USBS0)|(1<<UCSZ00);
   //(1<<URSEL0)|
   //fdevopen(UART_putchar, UART_getchar);
   
@@ -21,7 +21,7 @@ void UART_transmit(unsigned char data){
   
 }
 
-/*
+/*UBRR
 uint8_t uart_TryTransmit(unsigned chat data){
   if((UCSRA & (1 << UDRE))){ //when its ready, its emty
     UDR = data;

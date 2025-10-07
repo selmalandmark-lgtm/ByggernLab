@@ -14,7 +14,7 @@
 #include <stdint.h>
 #include <util/delay.h>
 #include "spi.h"
-
+#include "oled.h"
 //picocom -b 9600 /dev/ttyS0
 
 
@@ -23,11 +23,15 @@ int main(void) {
     fdevopen(UART_putchar, UART_getchar);
     //UART_transmit('s');
     //test_latch();
-    SRAM_init();
+    //SRAM_init();
+    while(1){printf("hei");_delay_ms(1000);}
+
     //SRAM_test();
-    //dec_test();
+    //dec_test()
+    
     adc_init();
     spi_init();
+
     printf("Starter SPI-test...\n");
 
     spi_selectSlave(0);
@@ -36,9 +40,10 @@ int main(void) {
     printf("Svar fra slave 1: 0x%02X\n", answer);
 
     spi_selectSlave(1);
-    spi_write(0xAB);
+    spi_write(0xAC);
     answer = spi_read();
     printf("Svar fra slave 2: 0x%02X\n", answer);
+    
 
 
 }
