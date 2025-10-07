@@ -1,5 +1,4 @@
-
-#define F_CPU 4915200
+#define F_CPU 4915200UL
 #define BAUD_RATE 9600
 #define MYUBRR (F_CPU/16/BAUD_RATE-1)
 
@@ -20,11 +19,11 @@
 
 int main(void) {
     UART_init(MYUBRR);
-    fdevopen(UART_putchar, UART_getchar);
+    fdevopen(UART_transmit, UART_receive);
     //UART_transmit('s');
     //test_latch();
     //SRAM_init();
-    while(1){printf("hei");_delay_ms(1000);}
+    while(1){printf("hei ");_delay_ms(1000);}
 
     //SRAM_test();
     //dec_test()
