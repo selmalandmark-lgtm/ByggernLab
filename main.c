@@ -26,35 +26,12 @@ int main(void) {
     SRAM_init();
     //while(1){printf("hei ");_delay_ms(1000);}
 
-    SRAM_test();
-    dec_test();
+    //SRAM_test();
+    //dec_test();
     
     adc_init();
     spi_init();
     _delay_ms(400);
-
-    //printf("Starter SPI-test...\n");
-    spi_selectSlave(0);
-    spi_write(0x05);
-    _delay_ms(40);
-    spi_write(1);
-    _delay_ms(40);
-    spi_write(3);
-    _delay_ms(40);
-
-    spi_write(0x01);
-    _delay_ms(40);
-    spi_write(1);
-    _delay_ms(40);
-    spi_write(3);
-    _delay_ms(40);
-
-    spi_write(0x02);
-    _delay_ms(40);
-    spi_write(1);
-    _delay_ms(40);
-    spi_write(3);
-    _delay_ms(40);
 
     //uint8_t answer = spi_read();
     //printf("Svar fra slave 1: 0x%02X\n", answer);
@@ -65,11 +42,43 @@ int main(void) {
     //printf("Svar fra slave 2: 0x%02X\n", answer);
 
     OLED_init();
-    OLED_home();
-    OLED_clear_line(0);
-    OLED_print("HELLO");
 
-    while(1){};
+
+    spi_selectSlave(0);
+    uint8_t i=0;
+   while(1){
+
+
+    spi_write(0x05);
+    _delay_ms(40);
+    spi_write(0);
+    _delay_ms(40);
+    spi_write(3);
+    _delay_ms(2000);
+
+    spi_write(0x05);
+    _delay_ms(40);
+    spi_write(1);
+    _delay_ms(40);
+    spi_write(3);
+    _delay_ms(2000);
+
+    spi_write(0x05);
+    _delay_ms(40);
+    spi_write(1);
+    _delay_ms(40);
+    spi_write(0);
+    _delay_ms(40);
+    i++;
+
+   }    
+
+    //OLED_home();
+   //spi_selectSlave(1);
+    while(1){OLED_print("HELLO");
+        }
+
+
 
 }
 //yellow = data
@@ -93,4 +102,27 @@ int main(void) {
         printf("Joystick X: %d%%\tJoystick Y: %d%%\n", pos.joystick_x, pos.joystick_y);
         printf("Slider X:   %d\tSlider Y:   %d\n\n", pos.slider_x, pos.slider_y);    
         _delay_ms(500);
-   }*/
+   }    printf("Starter SPI-test...\n");
+    
+   
+   spi_selectSlave(0);
+    spi_write(0x05);
+    _delay_ms(40);
+    spi_write(1);
+    _delay_ms(40);
+    spi_write(3);
+    _delay_ms(40);
+
+    spi_write(0x01);
+    _delay_ms(40);
+    spi_write(1);
+    _delay_ms(40);
+    spi_write(3);
+    _delay_ms(40);
+
+    spi_write(0x02);
+    _delay_ms(40);
+    spi_write(1);
+    _delay_ms(40);
+    spi_write(3);
+    _delay_ms(40);*/

@@ -4,42 +4,39 @@
 
 void OLED_init() // PDF:example appended to the datasheet
 { 
+DDRB|=(1<<PB2);
+OLED_write_cmd(0xae);
+OLED_write_cmd(0xa1); // segment remapping
+OLED_write_cmd(0xda); // vanlige pad-hardware: alternativ
+OLED_write_cmd(0x12); 
+OLED_write_cmd(0xc8); // utgangsskannretning: com63~com0
+OLED_write_cmd(0xa8); // multipleksforhold: 63
+OLED_write_cmd(0x3f);
+//OLED_write_cmd(0xd5); // visningsdelerforhold / oscillasjonsfrekvens-modus
+OLED_write_cmd(0x80);
+OLED_write_cmd(0x81); // kontrastkontroll
+OLED_write_cmd(0x50);
+OLED_write_cmd(0xd9); // forhåndsladningsperiode
+OLED_write_cmd(0x21);
+OLED_write_cmd(0x20);
+OLED_write_cmd(0x02);
+OLED_write_cmd(0xdb); // VCOM-frakoblingsnivåmodus
+OLED_write_cmd(0x30);
+OLED_write_cmd(0xad); // hovedkonfigurasjon
+OLED_write_cmd(0x00);
+OLED_write_cmd(0xa4); // utdata følger RAM-innhold
+OLED_write_cmd(0xa6); // sett normal visning
+OLED_write_cmd(0xaf); // skjerm på}                  // Display ON
 
-    // Slå AV først (trygt å konfigurere når skjermen er av)
-    OLED_write_cmd(0xAE);                    // Display OFF
-
-    OLED_write_cmd(0xD5); OLED_write_cmd(0x80); // Display clock div / osc
-    OLED_write_cmd(0xA8); OLED_write_cmd(0x3F); // Multiplex ratio (64-1)
-    OLED_write_cmd(0xD3); OLED_write_cmd(0x00); // Display offset = 0
-    OLED_write_cmd(0x40);                       // Start line = 0
-
-    // Hvis modul med intern VCC (vanlig): slå på charge pump
-    OLED_write_cmd(0x8D); OLED_write_cmd(0x14); // Charge pump enable
-
-    // Minnemodus: 0x00 = horizontal (greit for skriving radvis)
-    // (Du kan bruke 0x02 = page om du vil.)
-    OLED_write_cmd(0x20); OLED_write_cmd(0x00);
-
-    // Orientering (du ønsket speil horisontalt + vertikal flip)
-    OLED_write_cmd(0xA1); // Segment remap
-    OLED_write_cmd(0xC8); // COM scan dir
-
-    // COM pins hardware config (typisk for 128x64-moduler)
-    OLED_write_cmd(0xDA); OLED_write_cmd(0x12);
-
-    // Kontrast / precharge / VCOMH (trygge defaultverdier)
-    OLED_write_cmd(0x81); OLED_write_cmd(0x7F); // Contrast
-    OLED_write_cmd(0xD9); OLED_write_cmd(0xF1); // Pre-charge
-    OLED_write_cmd(0xDB); OLED_write_cmd(0x40); // VCOMH deselect
-
-    OLED_write_cmd(0xA4); // Følg RAM-innhold (ikke all-på)
-    OLED_write_cmd(0xA6); // Normal display (ikke invert)
-
-    // Rydd skjermbuffer (skriv 0 til hele RAM, se funksjon under)
-    //OLED_clear(); // valgfritt men anbefalt
-
-    // Slå PÅ til slutt
-    OLED_write_cmd(0xAF);                    // Display ON
+for (uint8_t i=0;i<64;i++){ //gjør hele skjermen svart
+    OLED_clear_line(i);spi_write;
+spi_write;
+spi_write;
+spi_write;
+spi_write;
+spi_write;
+}
+OLED_home();
 }
 
 
@@ -67,7 +64,7 @@ void OLED_clear_line(uint8_t line){
     OLED_goto_column(0);
 
     for (int i=0;i<=127;i++){
-        
+        OLED_write_data(0);
     }
 }
 
@@ -86,26 +83,7 @@ void OLED_write_cmd(uint8_t cmd){
 }
 
 void OLED_write_data(uint8_t data) //volatile - slaven skriver
-{OLED_write_cmd(0xa1); // segment remapping
-OLED_write_cmd(0xda); // vanlige pad-hardware: alternativ
-OLED_write_cmd(0x12);
-OLED_write_cmd(0xc8); // utgangsskannretning: com63~com0
-OLED_write_cmd(0xa8); // multipleksforhold: 63
-OLED_write_cmd(0x3f);
-OLED_write_cmd(0xd5); // visningsdelerforhold / oscillasjonsfrekvens-modus
-OLED_write_cmd(0x80);
-OLED_write_cmd(0x81); // kontrastkontroll
-OLED_write_cmd(0x50);
-OLED_write_cmd(0xd9); // forhåndsladningsperiode
-OLED_write_cmd(0x21);
-
-OLED_write_cmd(0xdb); // VCOM-frakoblingsnivåmodus
-OLED_write_cmd(0x30);
-OLED_write_cmd(0xad); // hovedkonfigurasjon
-OLED_write_cmd(0x00);
-OLED_write_cmd(0xa4); // utdata følger RAM-innhold
-OLED_write_cmd(0xa6); // sett normal visning
-OLED_write_cmd(0xaf); // skjerm på}
+{
     //DC må være 1
     PORTB |=(1<<PB2);
     //velg ss2- CS low, cs er lav så lenge vi skriver
