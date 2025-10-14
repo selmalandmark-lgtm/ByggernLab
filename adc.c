@@ -39,7 +39,7 @@ adc_values_t adc_read_raw(){
 
     //printf("x: %d\n", values.joystick_x);
     //printf("y: %d\n", values.joystick_y);
-    //printf("x2: %d\n", values.slider_x);
+    //rintf("x2: %d\n", values.slider_x);
     //printf("y2: %d\n", values.slider_y);
     
     return values;
@@ -73,16 +73,18 @@ adc_values_t position(int16_t center_x, int16_t center_y) {
 }
 
 volatile joy_direction get_joystickdirection(adc_values_t pos, int16_t center_x, int16_t center_y) {
-    if (pos.joystick_y > center_y) {
+
+    if (pos.joystick_y > 50) {
     return UP;
     }
-    else if (pos.joystick_y < center_y) {
+    else if (pos.joystick_y < -50) {
+
         return DOWN;
     }
-    else if (pos.joystick_x > center_x) {
+    else if (pos.joystick_x > 50) {
         return RIGHT;
     }
-    else if (pos.joystick_x < center_x) {
+    else if (pos.joystick_x <-50) {
         return LEFT;
     }
     else {
@@ -90,6 +92,7 @@ volatile joy_direction get_joystickdirection(adc_values_t pos, int16_t center_x,
     }
 
 }
+
 
 adc_values_t pos_calibrate(){
     int16_t x=0;
@@ -100,28 +103,28 @@ adc_values_t pos_calibrate(){
     for (int i=0;i<100;i++){
         values = adc_read_raw();
         _delay_ms(10);
-        x += values.joystick_y;
-        y += values.joystick_x; 
-        slider_x += values.slider_y;   
-        slider_y += values.slider_x;  
+        x += values.joystick_x;
+        y += values.joystick_y; 
+        slider_x += values.slider_x;   
+        slider_y += values.slider_y;  
         //printf("x: %d\n", values.joystick_x);
         //printf("y: %d\n", values.joystick_y);
         //printf("x2: %d\n", values.slider_x);
-        //printf("y2: %d\n", values.slider_y);
-        
+        //printf("y2: %d\n", values.slider_y);    
     }
+    _delay_ms(10);
     adc_values_t data;
     data.joystick_x=x/100;
     data.joystick_y=y/100;
     data.slider_x=slider_x/100;
     data.slider_y=slider_y/100;
+    _delay_ms(10);
+
 
     //printf("x: %d\n", data.joystick_x);
     //printf("y: %d\n", data.joystick_y);
     //printf("slid_x: %d\n", data.slider_x);
     //printf("slid_y: %d\n", data.slider_y);
-
-
 
     return data;
 }

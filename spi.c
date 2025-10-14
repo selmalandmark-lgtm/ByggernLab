@@ -1,5 +1,6 @@
 #include "spi.h"
 
+
 void spi_init(){
     //pb3 and pb4 as output, SS1, SS2
     DDRB |= (1 << PB3) | (1 << PB1);
@@ -63,15 +64,11 @@ void spi_transferBytes(const uint8_t *tx_data, uint8_t *rx_data, uint8_t len){
 }*/
 
 
+void spi_selectSlave(uint8_t ss){
+    PORTB |= (1 << IO_SS1) | (1 << DISP_SS2); // | (1 << OTHER_SS); // setter alle høy fordi de er aktiv lav
+    PORTB &= ~(1 << ss); // setter lav på den vi skal velge
+}
 
-void spi_selectSlave(uint8_t n){
-    //0 = ss1 og 1= ss2
-    if (n==0){ //ss1 skal aktiveres, ss2 deaktiveres
-        PORTB &= ~(1 << PB1);
-        PORTB |= (1 << PB3);
-    }
-    else if (n==1){
-        PORTB |= (1 << PB1); 
-        PORTB &= ~(1 << PB3);
-    }
+void spi_selectDeselect(uint8_t ss){
+    PORTB |= (1 << IO_SS1) | (1 << DISP_SS2);
 }
