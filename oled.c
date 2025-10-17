@@ -11,8 +11,8 @@ void OLED_init() // PDF:example appended to the datasheet
     OLED_write_cmd(0x02); //page adressing mode
     OLED_write_cmd(0xaf); // // Display ON
 
-OLED_clear_screen();
-OLED_home();
+    OLED_clear_screen();
+    OLED_home();
 }
 
 void OLED_clear_screen(){
@@ -40,13 +40,15 @@ void OLED_goto_line(uint8_t line){
 }
 
 void OLED_goto_column(uint8_t column){
+
     //ifølge databladet må kolonne deles i to, oppe og nede
-    uint8_t lower = (0x00)| (column & 0x0F); //ved å ta column med operasjon OG med 0000 1111 får vi de fire nederste.
+    //uint8_t lower = (0x00)| (column & 0x0F); //ved å ta column med operasjon OG med 0000 1111 får vi de fire nederste.
+    uint8_t lower = 0b00001111 & column;
     //tar så eller med det som står i databladet
-    uint8_t upper = (0x10) | ((column>>4) & 0xF0); //tilsvarende over: OG med 1111 0000
+    //uint8_t upper = (0x10) | ((column>>4) & 0xF0); //tilsvarende over: OG med 1111 0000
+    uint8_t upper = 0b00010000 | ((column>> 4) & 0b00001111);
     OLED_write_cmd(lower);
     OLED_write_cmd(upper);
-
 }
 
 void OLED_clear_line(uint8_t line){
@@ -70,7 +72,7 @@ void OLED_write_cmd(uint8_t cmd){
     //velg ss2- CS low, cs er lav så lenge vi skriver
     spi_selectSlave(DISP_SS2);
     spi_write(cmd); //skriver data
-    spi_selectDeselect(); //deselect slave 2
+    spi_deselectSlave(); //deselect slave 2
 }
 
 void OLED_write_data(uint8_t data) //volatile - slaven skriver
@@ -81,7 +83,7 @@ void OLED_write_data(uint8_t data) //volatile - slaven skriver
     spi_selectSlave(DISP_SS2);
     _delay_ms(1);
     spi_write(data); //skriver data
-    spi_selectDeselect(); //deselect slave 2
+    spi_deselectSlave(); //deselect slave 2
 }
 
 void OLED_print_char(char letter){

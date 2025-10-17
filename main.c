@@ -36,16 +36,18 @@ int main(void) {
     adc_values_t pos;
     uint8_t x_center = cal_data.joystick_x;
     uint8_t y_center = cal_data.joystick_y;
-    /*
+    
     menu_init();
     uint8_t menu_pos=navigation(x_center, y_center);
     printf("menu_pos: %d ", menu_pos);
     printf("ferdig");
     _delay_ms(100);
-*/
+
     Buttons btn;
+
     while(1){
         if(user_io_read_buttons(&btn) == 0){
+            //printf("%d\r\n", btn.L7);
             printf("L:%d%d%d%d%d%d%d  R:%d%d%d%d%d%d  Nav U:%d D:%d L:%d R:%d B:%d\r\n",
                 btn.L7,btn.L6,btn.L5,btn.L4,btn.L3,btn.L2,btn.L1,
                 btn.R6,btn.R5,btn.R4,btn.R3,btn.R2,btn.R1,

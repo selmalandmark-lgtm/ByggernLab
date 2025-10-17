@@ -17,24 +17,19 @@
 // Full-duplex transfer using your SPI write/read API
 static inline uint8_t txrx(uint8_t v){ spi_write(v); return spi_read(); }
 
-// Deselect helper (adapt if your SPI API has a specific deselect)
-static inline void deselect_all(void){
-    // If you have spi_deselectAll(), call that instead.
-    spi_selectSlave(255);
-}
 
 // Read the 3 raw bytes from the IO-board (with robust timing)
 static inline void read_raw(uint8_t *b0, uint8_t *b1, uint8_t *b2){
     spi_selectSlave(SPI_SLAVE_IO);
-    (void)txrx(CMD_BUTTONS);
+    spi_txrx(CMD_BUTTONS);
     _delay_us(80);                 // >= 40 us (be generous)
 
-    *b0 = txrx(0x00);              // Byte 0
+    *b0 = spi_txrx(0x00);              // Byte 0
     _delay_us(10);                 // >= 2 us (be generous)
-    *b1 = txrx(0x00);              // Byte 1
+    *b1 = spi_txrx(0x00);              // Byte 1
     _delay_us(10);
-    *b2 = txrx(0x00);              // Byte 2
-    deselect_all();
+    *b2 = spi_txrx(0x00);              // Byte 2
+    spi_deselectSlave();
 }
 
 void user_io_init(void){
@@ -43,15 +38,19 @@ void user_io_init(void){
 
 // Returns 0 on success
 int user_io_read_buttons(Buttons *btn){
-    if(!btn) return -1;
+    if(!btn) {
+        return -1;
+    }
 
     uint8_t b0, b1, b2;
     read_raw(&b0, &b1, &b2);
+    //printf("Raw bytes: nav=%d right=%d left=%d\r\n", b0, b1, b2);
 
-    // Your board appears to be: NAV first, then RIGHT, then LEFT
-    uint8_t nav   = b0;
-    uint8_t right = b1;
-    uint8_t left  = b2;
+
+    
+    uint8_t nav   = b2;
+    uint8_t right = b0;
+    uint8_t left  = b1;
 
     // If your board is active-low (rare for this), flip all three:
 #if NAV_ACTIVE_HIGH == 0
@@ -79,10 +78,11 @@ int user_io_read_buttons(Buttons *btn){
 
     // NAV: doc says [0 0 0 Btn Right Left Down Up]
     uint8_t up    = !!(nav & (1<<0));
-    uint8_t down  = !!(nav & (1<<1));
-    uint8_t leftn = !!(nav & (1<<2));
-    uint8_t rightn= !!(nav & (1<<3));
+    uint8_t leftn  = !!(nav & (1<<3));
+    uint8_t down = !!(nav & (1<<2));
+    uint8_t rightn = !!(nav & (1<<1));
     uint8_t btnn  = !!(nav & (1<<4));
+
 
 #if NAV_SWAP_U_AND_B
     // Some boards/prints observed U and B swapped: fix it here if needed
