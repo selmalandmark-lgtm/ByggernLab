@@ -11,28 +11,68 @@
 #include <avr/io.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <util/delay.h>
 #include "spi.h"
 #include "oled.h"
 #include "menu.h"
 #include "user_io_board.h"
+#include "mcp2515.h"
+#include "can.h"
 
 //picocom -b 9600 /dev/ttyS0
 
-int main(void) {
-    UART_init(MYUBRR);
+int main(void){
+	UART_init(MYUBRR);
     fdevopen(UART_transmit, UART_receive);
     SRAM_init();
     adc_init();
     user_io_init();
-    spi_init();
-    _delay_ms(400);
+	can_init(); // Denne initierer mcp, som initierer spi.
+   
+    _delay_ms(100);
+	mcp2515_set_mode(MODE_LOOPBACK);
+    //printf("her"); 
+	// Sender melding
+	can_message message = {
+		1, // Id
+		1, // Lengde på dataen
+		"h" // Data. Maks åtte byte
+	};
+    
+    while(1){
+        can_messenger_send(&message); // Sender melding
 
-    spi_selectSlave(DISP_SS2);
-    OLED_init();
-    //menu();
+        // Nå er meldingen sendt. Fordi vi er i loopbackmodus blir meldingen umiddelbart "mottatt" ac MCP2515.
 
-    adc_values_t cal_data = pos_calibrate();
+        // Mottar melding
+        can_data_receive(&message);
+        printf("Heisann sveisann, vi har fått ei melding.\r\n");
+        printf("Id: %u \r\n", message.id);
+        printf("Lengde: %u \r\n", message.data_length);
+        //printf("Melding: %s \r\n\r\n", message.data);
+
+        message.id++;
+    }
+	return 0;
+
+}
+    
+
+//yellow = data
+//purple = adress
+
+
+/* joystick-test 
+  adc_values_t cal_data = pos_calibrate();
+    adc_values_t pos;
+
+    while (1){
+        pos=position(165 , 160);
+        printf("x: %d\n",pos.joystick_x);
+        _delay_ms(500);
+    }
+            adc_values_t cal_data = pos_calibrate();
     adc_values_t pos;
     uint8_t x_center = cal_data.joystick_x;
     uint8_t y_center = cal_data.joystick_y;
@@ -54,23 +94,5 @@ int main(void) {
                 btn.NU,btn.ND,btn.NL,btn.NR,btn.NB);
         }
         _delay_ms(1000);
-    }
-}
-
-    
-
-
-//yellow = data
-//purple = adress
-
-
-/* joystick-test 
-  adc_values_t cal_data = pos_calibrate();
-    adc_values_t pos;
-
-    while (1){
-        pos=position(165 , 160);
-        printf("x: %d\n",pos.joystick_x);
-        _delay_ms(500);
     }
 */

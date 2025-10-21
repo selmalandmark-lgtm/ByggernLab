@@ -1,18 +1,17 @@
 #include "mcp2515.h"
 
-void mcp2515_init(){
+uint8_t mcp2515_init(){
     uint8_t value;
     spi_init(); //?
     mcp2515_reset();
-    _delay_ms(1);
-    mcp2515_read(MCP_CANSTAT);
+    _delay_ms(10);
+    value = mcp2515_read(MCP_CANSTAT);
     if ((value&MODE_MASK) != MODE_CONFIG){
         printf("MCP2515 is NOT in configuration mode after reset!\n");
         return 1;
     }
-    //more initialization
     return 0;
-
+    //more initialization
 }
 uint8_t mcp2515_read(uint8_t address){
     //lowering cs pin
@@ -23,6 +22,7 @@ uint8_t mcp2515_read(uint8_t address){
     uint8_t data= spi_read();
     //higering cs pin
     PORTB |= (1 << MCP_SS);
+    //printf("%d\n",data);
     return data;
 }
 void mcp2515_write(uint8_t address, uint8_t data){
@@ -31,8 +31,8 @@ void mcp2515_write(uint8_t address, uint8_t data){
     spi_write(address);
     spi_write(data);
     PORTB |= (1 << MCP_SS);
-
 }
+
 void mcp2515_request_to_send(int buffer_index){
     if (buffer_index>2){return;}
     PORTB &= ~(1 << MCP_SS);
@@ -73,3 +73,9 @@ uint8_t mcp2515_read_status(){
     return status;
 }
 
+
+void mcp2515_set_mode(uint8_t mode) {
+	mcp2515_bit_modify(MCP_CANCTRL, 0b11100000, mode);
+    
+    //while ( (mcp2515_read(MCP_CANSTAT) & MODE_MASK) != mode){printf("her"); }
+    }

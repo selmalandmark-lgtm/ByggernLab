@@ -26,10 +26,10 @@
 #define MCP_TXB2D0 0x56
 
 // Motta-buffer 0
-#define MCP_RXB0SIDH 0x61
-#define MCP_RXB0SIDL 0x62
-#define MCP_RXB0DLC 0x65
-#define MCP_RXB0D0 0x66
+#define MCP_RXB0SIDH 0x61 //id high
+#define MCP_RXB0SIDL 0x62 //id low
+#define MCP_RXB0DLC 0x65 //length
+#define MCP_RXB0D0 0x66 //data
 
 // Motta-buffer 1
 #define MCP_RXB1SIDH 0x71
@@ -37,8 +37,14 @@
 #define MCP_RXB1DLC 0x75
 #define MCP_RXB1D0 0x76
 
-struct can_message{
+typedef struct{
     uint16_t id;
-    char data_length;
-    char data[8];
-}
+    uint8_t data_length;
+    uint8_t data[8];
+}can_message;
+
+
+void can_init();
+void can_messenger_send(can_message* msg);
+void can_data_receive(can_message* message);
+uint8_t CAN_init_loopback();
