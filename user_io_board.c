@@ -2,10 +2,7 @@
 #include "spi.h"
 #include <util/delay.h>
 
-// ---- CONFIG: set this to your real slave id for the IO-board (not the OLED) ----
-#ifndef SPI_SLAVE_IO
-#define SPI_SLAVE_IO  1
-#endif
+
 
 // Command defined by IO-board firmware
 #define CMD_BUTTONS   0x04
@@ -20,7 +17,7 @@ static inline uint8_t txrx(uint8_t v){ spi_write(v); return spi_read(); }
 
 // Read the 3 raw bytes from the IO-board (with robust timing)
 static inline void read_raw(uint8_t *b0, uint8_t *b1, uint8_t *b2){
-    spi_selectSlave(SPI_SLAVE_IO);
+    spi_selectSlave(IO_SS1);
     spi_txrx(CMD_BUTTONS);
     _delay_us(80);                 // >= 40 us (be generous)
 

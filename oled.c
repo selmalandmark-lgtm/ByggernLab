@@ -3,7 +3,7 @@
 
 void OLED_init() // PDF:example appended to the datasheet
 { 
-    DDRB|=(1<<PB2); //dc bit
+    DDRB|=(1<<DC_BIT); //dc bit
     OLED_write_cmd(0xae); //display off
     OLED_write_cmd(0xa1); // segment remapping 
     OLED_write_cmd(0xc8); // utgangsskannretning: com63~com0
@@ -68,7 +68,7 @@ void OLED_pos(uint8_t row, uint8_t column){
 }
 
 void OLED_write_cmd(uint8_t cmd){
-    PORTB &= ~(1<<PB2); //dc=0
+    PORTB &= ~(1<<DC_BIT); //dc=0
     //velg ss2- CS low, cs er lav så lenge vi skriver
     spi_selectSlave(DISP_SS2);
     spi_write(cmd); //skriver data
@@ -78,7 +78,7 @@ void OLED_write_cmd(uint8_t cmd){
 void OLED_write_data(uint8_t data) //volatile - slaven skriver
 {
     //DC må være 1
-    PORTB |=(1<<PB2);
+    PORTB |=(1<<DC_BIT);
     //velg ss2- CS low, cs er lav så lenge vi skriver
     spi_selectSlave(DISP_SS2);
     _delay_ms(1);

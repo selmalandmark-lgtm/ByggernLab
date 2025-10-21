@@ -20,7 +20,7 @@ static void menu_draw_cursor(uint8_t active_line){
 
 
 void menu_init(){
-    DDRB &= ~(1 << PB0); //input
+    DDRB &= ~(1 << JOY_BTN); //input
     OLED_home();
     OLED_print("line 1");
 
@@ -44,10 +44,8 @@ uint8_t navigation(uint8_t x, uint8_t y){
     //joy_dir = get_joystickdirection(pos_joystick, x,y);
     menu_draw_cursor(menu_pos);
 
-    while ((PINB & (1 << PB0))) { // kjør mens knappen IKKE trykkes
+    while ((PINB & (1 << JOY_BTN))) { // kjør mens knappen IKKE trykkes
 
-        
-        
         pos_joystick = position(x, y);
         _delay_ms(10);
         joy_dir = get_joystickdirection(pos_joystick, x, y);

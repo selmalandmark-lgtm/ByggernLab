@@ -3,6 +3,8 @@
 #include <util/delay.h>
 #include "fonts.h"
 
+#define DC_BIT PB2
+
 void OLED_init();
 void OLED_home();
 void OLED_goto_line(uint8_t line);

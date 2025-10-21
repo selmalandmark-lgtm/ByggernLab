@@ -2,7 +2,7 @@
 #include <util/delay.h>
 #include <avr/io.h>
 
-
+#define JOY_BTN PB0
 
 void menu_init();
 
