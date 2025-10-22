@@ -1,12 +1,23 @@
 #include "mcp2515.h"
 
 uint8_t mcp2515_init(){
+    DDRB  |= (1 << MCP_SS);
+PORTB |= (1 << MCP_SS);
+
+    // 2) Keep PB4 (hardware SS) OUTPUT + HIGH so AVR stays SPI master
+DDRB  |= (1 << PB4);
+PORTB |= (1 << PB4);
+
+    // 3) Deassert other slaves' CS (example: OLED on PB3)
+DDRB  |= (1 << PB3);
+PORTB |= (1 << PB3);
     uint8_t value;
     spi_init(); //?
     mcp2515_reset();
     _delay_ms(10);
-    value = mcp2515_read(MCP_CANSTAT);
-    if ((value&MODE_MASK) != MODE_CONFIG){
+      value = mcp2515_read(MCP_CANSTAT);
+    printf("CANSTAT after reset: 0x%02X\n", value);  // should be 0x8x
+    if ((value & MODE_MASK) != MODE_CONFIG){
         printf("MCP2515 is NOT in configuration mode after reset!\n");
         return 1;
     }
@@ -22,7 +33,7 @@ uint8_t mcp2515_read(uint8_t address){
     uint8_t data= spi_read();
     //higering cs pin
     PORTB |= (1 << MCP_SS);
-    //printf("%d\n",data);
+    //printf("%d read data\n",data);
     return data;
 }
 void mcp2515_write(uint8_t address, uint8_t data){
@@ -31,6 +42,7 @@ void mcp2515_write(uint8_t address, uint8_t data){
     spi_write(address);
     spi_write(data);
     PORTB |= (1 << MCP_SS);
+    //printf("%d write data: \n", data);
 }
 
 void mcp2515_request_to_send(int buffer_index){

@@ -27,35 +27,33 @@ int main(void){
     fdevopen(UART_transmit, UART_receive);
     SRAM_init();
     adc_init();
+    spi_deselectSlave();
     user_io_init();
 	can_init(); // Denne initierer mcp, som initierer spi.
-   
+    
     _delay_ms(100);
 	mcp2515_set_mode(MODE_LOOPBACK);
     //printf("her"); 
 	// Sender melding
-	can_message message = {
-		1, // Id
-		1, // Lengde på dataen
-		"h" // Data. Maks åtte byte
-	};
-    
-    while(1){
-        can_messenger_send(&message); // Sender melding
+can_message tx_message = {
+    1,
+    5,
+    "hello"
+};
 
-        // Nå er meldingen sendt. Fordi vi er i loopbackmodus blir meldingen umiddelbart "mottatt" ac MCP2515.
-
-        // Mottar melding
-        can_data_receive(&message);
-        printf("Heisann sveisann, vi har fått ei melding.\r\n");
-        printf("Id: %u \r\n", message.id);
-        printf("Lengde: %u \r\n", message.data_length);
-        //printf("Melding: %s \r\n\r\n", message.data);
-
-        message.id++;
-    }
-	return 0;
-
+can_message rx_message;
+while(1){   
+    can_messenger_send(&tx_message);
+    _delay_ms(100);
+    can_data_receive(&rx_message);
+    printf("Hello! We received a message1.\r\n");
+    printf("Id: %u \r\n", rx_message.id);
+    printf("Length: %u \r\n", rx_message.data_length);
+    printf("Message: %s \r\n\r\n", rx_message.data);
+    tx_message.id++;
+    //printf("%d ", tx_message.id);
+    _delay_ms(1000);
+}
 }
     
 

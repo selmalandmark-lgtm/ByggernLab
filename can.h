@@ -38,7 +38,7 @@
 #define MCP_RXB1D0 0x76
 
 typedef struct{
-    uint16_t id;
+    uint8_t id;
     uint8_t data_length;
     uint8_t data[8];
 }can_message;
