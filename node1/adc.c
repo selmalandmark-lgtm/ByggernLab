@@ -68,21 +68,21 @@ void get_position(int16_t center_x, int16_t center_y, adc_values_t *pos) {
     if (pos->joystick_y < -100) pos->joystick_y = -100;
 }
 
-volatile joy_direction get_joystickdirection(adc_values_t *pos) {
-    if (pos->joystick_y > 50) {
-        return UP;
+uint8_t get_joystickdirection(adc_values_t *pos) {
+    if (pos->joystick_y > 80) {
+        return 0x01;
     }
-    else if (pos->joystick_y < -50) { 
-        return DOWN;
+    else if (pos->joystick_y < 40) { 
+        return 0x03;
     }
 
-    else if (pos->joystick_x > 50) { 
-        return RIGHT;
+    else if (pos->joystick_x > 80) { 
+        return 0x02;
     }
-    else if (pos->joystick_x < -50) { 
-        return LEFT;
+    else if (pos->joystick_x < 40) { 
+        return 0x04;
     }
-    return NEUTRAL;
+    return 0x00;
 }
 
 void pos_calibrate(adc_values_t *data){

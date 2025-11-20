@@ -22,7 +22,7 @@ typedef enum {
 void adc_init(void);
 void adc_read_raw(adc_values_t *values); //volatile
 void get_position(int16_t center_x, int16_t center_y, adc_values_t *pos);
-volatile joy_direction get_joystickdirection(adc_values_t *pos);
+uint8_t get_joystickdirection(adc_values_t *pos);
 
 void pos_calibrate(adc_values_t *data);
 

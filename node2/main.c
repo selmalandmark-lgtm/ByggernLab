@@ -123,7 +123,6 @@ int main()
         ir_count_score(&score, &timeIR);
 
         if (!can_receive(&message, 0)){
-
             if (message.data[2]==1){
                         solenoid_out();
                         delay_ms(10000);
